@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+
+    <!-- Font Awesome for chat icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Chat Icon Styling */
+        .chat-icon {
+            width: 50px;
+            height: 50px;
+            background-color: black;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .chat-icon i {
+            font-size: 24px;
+        }
+
+        /* Chatbot container */
+        .chatbot-container {
+            width: 300px;
+            border: 1px solid #ccc;
+            background-color: white;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            display: none;
+            z-index: 1000;
+        }
+
+        .chatbot-header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header span {
+            cursor: pointer;
+        }
+
+        .chatbot-body {
+            height: 300px;
+            padding: 10px;
+            overflow-y: scroll;
+            background-color: #f9f9f9;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .chatbot-input button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chat-message {
+            margin: 5px 0;
+        }
+
+        .user-message {
+            text-align: right;
+            color: blue;
+        }
+
+        .bot-message {
+            text-align: left;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Chat Icon -->
+    <div class="chat-icon" onclick="toggleChatbot()">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+
+    <!-- Chatbot container -->
+    <div class="chatbot-container" id="chatbot">
+        <div class="chatbot-header">
+            <h3>Chat with us!</h3>
+            <span onclick="toggleChatbot()">&times;</span>
+        </div>
+        <div class="chatbot-body">
+            <div id="chat-output"></div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="user-input" placeholder="Type your message here...">
+            <button id="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to show or hide the chatbot
+        function toggleChatbot() {
+            const chatbot = document.getElementById("chatbot");
+            chatbot.style.display = (chatbot.style.display === "none" || chatbot.style.display === "") ? "block" : "none";
+        }
+
+        // Function to handle sending and displaying messages
+        function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            if (userInput.trim() === "") return;
+
+            addUserMessage(userInput);
+            handleUserMessage(userInput);
+            document.getElementById("user-input").value = ""; // Clear input after sending
+        }
+
+        function addUserMessage(message) {
+            const chatOutput = document.getElementById("chat-output");
+            const userMessage = `<div class="chat-message user-message"><strong>You:</strong> ${message}</div>`;
+            chatOutput.innerHTML += userMessage;
+            chatOutput.scrollTop = chatOutput.scrollHeight; // Scroll to the bottom
+        }
+
+        function handleUserMessage(message) {
+            const lowercaseMessage = message.toLowerCase();
+
+            // Handle specific user commands like "call"
+            if (lowercaseMessage.includes("call")) {
+                triggerCallAction(); // If the message includes "call", trigger the call action
+                return; // Exit after triggering the call
+            }
+
+            botResponse(message); // If no call command, proceed with normal bot response
+        }
+
+        function botResponse(userMessage) {
+            const chatOutput = document.getElementById("chat-output");
+            const response = getBotResponse(userMessage);
+
+            setTimeout(function() {
+                const botMessage = `<div class="chat-message bot-message"><strong>Bot:</strong> ${response}</div>`;
+                chatOutput.innerHTML += botMessage;
+                chatOutput.scrollTop = chatOutput.scrollHeight; // Scroll to the bottom
+            }, 500); // Simulate bot thinking delay
+        }
+
+        function getBotResponse(message) {
+            const lowercaseMessage = message.toLowerCase();
+
+            if (lowercaseMessage.includes("hello")) {
+                return "Hello! How can I help you today?";
+            } else if (lowercaseMessage.includes("how are you")) {
+                return "I'm just a bot, but I'm doing great! How about you?";
+            } else if (lowercaseMessage.includes("what is your owner name")) {
+                return "My owner's name is Haroon Nadir."; // Respond with the owner's name
+            } else {
+                return "Sorry, I don't understand that. Can you please rephrase?";
+            }
+        }
+
+        function triggerCallAction() {
+            const chatOutput = document.getElementById("chat-output");
+
+            setTimeout(function() {
+                const callMessage = `<div class="chat-message bot-message"><strong>Bot:</strong> 📞 Initiating a call... (simulated)</div>`;
+                chatOutput.innerHTML += callMessage;
+                chatOutput.scrollTop = chatOutput.scrollHeight; // Scroll to the bottom
+            }, 500); // Simulate some delay before showing the call action
+        }
+    </script>
+
+</body>
+</html>
